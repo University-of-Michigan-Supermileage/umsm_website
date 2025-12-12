@@ -406,7 +406,8 @@
                         <h2 class="text-3xl md:text-5xl font-extrabold neon-white-text">Become Part of the Legacy</h2>
                         <p class="mt-4 max-w-3xl mx-auto text-gray-300">Whether you are a student eager to apply your skills, or an organization looking to sponsor the future of automotive innovation, we have a place for you.</p>
                         <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
-                            <a href="mailto:umsm.leads@umich.edu" target="_blank" class="bg-michigan-maize text-dark-navy font-bold py-3 px-8 rounded-lg text-lg tracking-wide hover:bg-opacity-90 transition-all duration-300">For Students</a>
+                            <button id="btn-students" class="bg-michigan-maize text-dark-navy font-bold py-3 px-8 rounded-lg text-lg tracking-wide hover:bg-opacity-90 transition-all duration-300">For Students</button>
+                            
                             <a href="https://www.giving.umich.edu/give/933369" target="_blank" class="bg-transparent border-2 border-michigan-maize text-michigan-maize font-bold py-3 px-8 rounded-lg text-lg tracking-wide hover:bg-michigan-maize hover:text-dark-navy transition-all duration-300">For Sponsors</a>
                         </div>
                     </div>
@@ -429,11 +430,24 @@
             <span class="close-button">&times;</span>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                 <div>
-                    <img src="index/cad.png" alt="Cedar" class="rounded-3xl w-full h-auto ">
+                    <img src="index/cad.png" alt="Cedar" class="rounded-3xl w-full h-auto">
                 </div>
                 <div>
                     <h2 class="text-4xl font-bold neon-maize-text mb-6">Cedar</h2>
                     <p class="text-lg text-gray-300">Cedar is our newest and first ever battery-electric urban concept vehicle, representing the culmination of our sustainable vehicle development. We conducted our first ever team-wide Systems Requirements Review to help us finalize our design requirements. In order to come up with our requirements we conducted research using six-sigma analysis, ran Matlab and Simulink simulations on road load, tractive forces and motor efficiencies, and built on feedback and lessons learned from alumni, professors and industry professionals. Cedar will ultimately debut in the Shell Eco Marathon in spring 2026, followed by a world record attempt in 2027.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-students" class="modal-overlay">
+        <div class="glass-panel modal-content rounded-4xl p-8 lg:p-12 text-center relative max-w-2xl">
+            <span class="close-button">&times;</span>
+            <div class="flex flex-col items-center justify-center space-y-6">
+                <h2 class="text-3xl md:text-4xl font-bold neon-maize-text">Join the Team</h2>
+                <div class="text-xl text-gray-200">
+                    <p class="mb-4">Thanks for your interest in Supermileage!</p>
+                    <p class="text-gray-300 text-lg">Send an email to <b>umsm.leads@umich.edu</b> for more info.</p>
                 </div>
             </div>
         </div>
@@ -531,10 +545,40 @@
                 });
             });
             
-            // Click Animation & Modal Logic
+            // --- MODAL LOGIC (Refactored for reuse) ---
             const modals = document.querySelectorAll('.modal-overlay');
             const closeButtons = document.querySelectorAll('.close-button');
-            
+            const studentBtn = document.getElementById('btn-students');
+            const studentModal = document.getElementById('modal-students');
+
+            function openModal(modal) { 
+                if (modal == null) return; 
+                modal.classList.add('active'); 
+                document.body.classList.add('modal-open'); 
+            }
+
+            function closeModal(modal) {
+                if (modal == null) return;
+                modal.classList.remove('active');
+                document.body.classList.remove('modal-open');
+                
+                // Reset cards if closed from a card click
+                cards.forEach(c => {
+                    c.style.opacity = '1';
+                    c.classList.remove('is-animating');
+                    c.style.transform = 'rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+                });
+            }
+
+            // Click Handler for Student Button
+            if (studentBtn && studentModal) {
+                studentBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    openModal(studentModal);
+                });
+            }
+
+            // Click Handler for Card-triggered Modals
             cards.forEach(card => {
                 const targetModalId = card.dataset.modalTarget;
                 if (!targetModalId) return;
@@ -547,7 +591,6 @@
                     const clone = card.cloneNode(true);
                     
                     clone.classList.add('card-clone');
-                    // Remove hover/click events from clone
                     clone.style.pointerEvents = 'none';
                     
                     document.body.appendChild(clone);
@@ -580,28 +623,10 @@
                 });
             });
 
-            function openModal(modal) { 
-                if (modal == null) return; 
-                modal.classList.add('active'); 
-                document.body.classList.add('modal-open'); 
-            }
-
-            function closeModal(modal) {
-                if (modal == null) return;
-                modal.classList.remove('active');
-                document.body.classList.remove('modal-open');
-                
-                // Reset cards
-                cards.forEach(c => {
-                    c.style.opacity = '1';
-                    c.classList.remove('is-animating');
-                    c.style.transform = 'rotateX(0) rotateY(0) scale3d(1, 1, 1)';
-                });
-            }
-
+            // Close Logic
             closeButtons.forEach(button => {
                 button.addEventListener('click', (e) => { 
-                    e.stopPropagation(); // Prevent bubbling
+                    e.stopPropagation(); 
                     const modal = button.closest('.modal-overlay'); 
                     closeModal(modal); 
                 });
