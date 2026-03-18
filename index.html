@@ -460,19 +460,6 @@
             </div>
         </div>
     </div>
-
-    <div id="modal-giving-blue" class="modal-overlay">
-        <div class="glass-panel modal-content rounded-4xl p-8 lg:p-12 text-center relative max-w-2xl border-t-4 border-michigan-maize">
-            <span class="close-button">&times;</span>
-            <div class="flex flex-col items-center justify-center space-y-6">
-                <h2 class="text-3xl md:text-5xl font-bold neon-maize-text">It's Giving Blue Day!</h2>
-                <div class="text-xl text-gray-200">
-                    <p class="mb-6">Support the University of Michigan Supermileage team and help us build the future of hyper-efficient vehicles.</p>
-                </div>
-                <a href="https://www.givecampus.com/schools/UniversityofMichigan/giving-blueday-2026/pages/student-organizations/Supermileage" target="_blank" class="bg-michigan-maize text-dark-navy font-bold py-3 px-8 rounded-lg text-lg tracking-wide hover:bg-opacity-90 transition-all duration-300">Give Now</a>
-            </div>
-        </div>
-    </div>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -682,14 +669,6 @@
             }, { threshold: 0.1 });
             
             document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-            // MODIFIED: Giving Blue Day Popup Logic (Now shows every time on load)
-            const givingBlueModal = document.getElementById('modal-giving-blue');
-            if (givingBlueModal) {
-                setTimeout(() => {
-                    openModal(givingBlueModal);
-                }, 600); // 600ms delay so it slides in smoothly after the page loads
-            }
 
             // NEW: Countdown Logic to Shell Eco-marathon
             // Set for April 7, 2026, 1:30 PM EDT
