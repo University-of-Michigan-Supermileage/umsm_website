@@ -320,14 +320,6 @@
     <main id="main-content">
         <div class="hero-spacer">
             <img id="hero-logo" src="umsm_neon.png" alt="University of Michigan Supermileage Neon Logo">
-            
-            <div class="mt-auto mb-24 glass-panel rounded-3xl p-6 md:p-8 text-center z-20 reveal w-11/12 max-w-xl mx-auto">
-                <h3 class="text-sm md:text-lg font-bold neon-maize-text mb-3 uppercase tracking-widest">Countdown to Shell Eco-marathon</h3>
-                <div id="countdown-timer" class="text-3xl md:text-5xl font-extrabold text-white tracking-wider font-mono drop-shadow-lg">
-                    --d --h --m --s
-                </div>
-            </div>
-
             <div id="scroll-indicator">
                 <svg class="w-10 h-10 text-white/70 animate-bounce-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
             </div>
@@ -460,19 +452,6 @@
             </div>
         </div>
     </div>
-
-    <div id="modal-giving-blue" class="modal-overlay">
-        <div class="glass-panel modal-content rounded-4xl p-8 lg:p-12 text-center relative max-w-2xl border-t-4 border-michigan-maize">
-            <span class="close-button">&times;</span>
-            <div class="flex flex-col items-center justify-center space-y-6">
-                <h2 class="text-3xl md:text-5xl font-bold neon-maize-text">It's Giving Blue Day!</h2>
-                <div class="text-xl text-gray-200">
-                    <p class="mb-6">Support the University of Michigan Supermileage team and help us build the future of hyper-efficient vehicles.</p>
-                </div>
-                <a href="https://www.givecampus.com/schools/UniversityofMichigan/giving-blueday-2026/pages/student-organizations/Supermileage" target="_blank" class="bg-michigan-maize text-dark-navy font-bold py-3 px-8 rounded-lg text-lg tracking-wide hover:bg-opacity-90 transition-all duration-300">Give Now</a>
-            </div>
-        </div>
-    </div>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -545,6 +524,8 @@
             // Holographic Card Logic (Touch Check Removed for Robustness)
             const cards = document.querySelectorAll('.holo-card');
             
+            // We apply this to ALL devices now to ensure the effect works 
+            // even on hybrid laptops or if browser devtools are open.
             cards.forEach(card => {
                 card.addEventListener('mousemove', (e) => {
                     if (card.classList.contains('is-animating')) return;
@@ -682,38 +663,6 @@
             }, { threshold: 0.1 });
             
             document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-            // MODIFIED: Giving Blue Day Popup Logic (Now shows every time on load)
-            const givingBlueModal = document.getElementById('modal-giving-blue');
-            if (givingBlueModal) {
-                setTimeout(() => {
-                    openModal(givingBlueModal);
-                }, 600); // 600ms delay so it slides in smoothly after the page loads
-            }
-
-            // NEW: Countdown Logic to Shell Eco-marathon
-            // Set for April 7, 2026, 1:30 PM EDT
-            const countDownDate = new Date("Apr 7, 2026 13:30:00").getTime();
-            const countdownTimerEl = document.getElementById("countdown-timer");
-            
-            if (countdownTimerEl) {
-                const countdownInterval = setInterval(function() {
-                    const now = new Date().getTime();
-                    const distance = countDownDate - now;
-
-                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                    countdownTimerEl.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-
-                    if (distance < 0) {
-                        clearInterval(countdownInterval);
-                        countdownTimerEl.innerHTML = "The Shell Eco-marathon has begun!";
-                    }
-                }, 1000);
-            }
         });
     </script>
 </body>
