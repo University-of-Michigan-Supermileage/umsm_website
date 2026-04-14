@@ -42,38 +42,36 @@
             font-family: 'Manrope', sans-serif;
             overflow-x: hidden;
             
-            /* Desktop Default */
-            background-image: url('zoomed_out.png'); 
+            /* NEW DESKTOP BACKGROUND */
+            background-image: url('banner_desktop.jpg'); 
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             background-repeat: no-repeat;
         }
 
-        /* Mobile / Portrait Override */
         @media (max-width: 768px), (orientation: portrait) {
             body {
-                /* STACKED BACKGROUNDS:
-                   1. The Gradient (Top layer): Fades from Transparent to Solid Black to smooth the image edge.
-                   2. The Image (Bottom layer): Your mobile_bg.png
-                */
                 background-image: 
                     linear-gradient(to bottom, 
-                        rgba(0,0,0,0) 50%,    /* Top half is clear for cars */
-                        rgba(0,0,0,0.8) 80%,  /* Starts getting dark */
-                        #000000 100%          /* Solid black at bottom */
+                        rgba(0,0,0,0.4) 100%,    
+                        rgba(0,0,0,0.4) 100%,  
+                        #000000 100%          
                     ),
                     url('mobile_bg.png');
                 
-                /* Size both layers to fit width (100%) and auto height */
-                background-size: 100% auto, 100% auto; 
+                /* 1. Correct syntax to cover both layers */
+                background-size: cover, cover; 
+                
                 background-position: top center, top center;
-                background-attachment: scroll;
+                
+                /* 2. CHANGE THIS FROM 'scroll' TO 'fixed' FOR PARALLAX */
+                background-attachment: fixed, fixed; 
+                
                 background-repeat: no-repeat;
                 min-height: 100vh;
             }
             
-            /* Hide the aurora on mobile to keep the background image clean */
             #aurora-background {
                 display: none !important;
             }
@@ -105,14 +103,7 @@
             padding-top: 20vh;
         }
 
-        /* --- ANIMATIONS --- */
-        #hero-logo {
-            width: 80%; max-width: 500px; height: auto;
-            transition: opacity 0.05s ease-in-out;
-            animation: neon-flicker 1.5s infinite linear;
-            will-change: opacity;
-        }
-
+        /* --- ANIMATIONS (Used for Intro Logo) --- */
         @keyframes neon-flicker {
             0%, 100% { opacity: 1; } 10% { opacity: 0.95; } 12% { opacity: 1; } 14% { opacity: 0.8; } 16% { opacity: 1; }
             28% { opacity: 1; } 30% { opacity: 0.1; } 30.5% { opacity: 1; } 32% { opacity: 0.2; } 32.5% { opacity: 1; }
@@ -134,7 +125,7 @@
             position: absolute; height: 80%; top: 10%;
             background-color: rgba(255, 255, 255, 0.15);
             border-radius: 9999px; 
-            z-index: 0; /* Sits below text, above glass panel */
+            z-index: 0; 
             transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); opacity: 0;
             display: none; 
             pointer-events: none;
@@ -144,7 +135,7 @@
         /* Navbar Links */
         #nav-links a {
             position: relative;
-            z-index: 10; /* Ensures text is clickable over slider */
+            z-index: 10; 
         }
         
         .glass-panel {
@@ -192,7 +183,6 @@
         .holo-card {
             transform-style: preserve-3d;
             transition: transform 0.1s ease-out;
-            /* Ensure pointer events are active for the hover effect */
             pointer-events: auto; 
             position: relative;
             z-index: 10;
@@ -263,11 +253,29 @@
         .modal-overlay.active { display: flex; opacity: 1; }
         
         .modal-content { 
-            width: 90%; max-width: 900px; max-height: 80vh; overflow-y: auto; 
+            width: 90%; max-width: 900px; max-height: 80vh; 
+            overflow: hidden; /* Changed from overflow-y: auto */
             transform: scale(0.95); opacity: 0; 
             transition: all 0.4s 0.2s cubic-bezier(0.23, 1, 0.32, 1); 
         } 
+        /* ... existing modal-overlay.active states stay the same ... */
+
         .modal-overlay.active .modal-content { transform: scale(1); opacity: 1; }
+        /* ADD THIS NEW BLOCK for the inner scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05); 
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 203, 10, 0.4); 
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 203, 10, 0.8); 
+        }
         
         .close-button { 
             position: absolute; top: 1rem; right: 1.5rem; 
@@ -277,8 +285,9 @@
         .close-button:hover { transform: scale(1.1); }
     </style>
 </head>
-<body>
-
+<body class="overflow-hidden"> <div id="intro-overlay" class="fixed inset-0 bg-black z-[99999] flex items-center justify-center transition-opacity duration-1000 ease-in-out">
+        <img id="intro-logo" src="umsm_neon.png" alt="University of Michigan Supermileage" class="w-4/5 max-w-[600px] opacity-0 transition-all duration-1000 ease-out transform scale-90">
+    </div>
     <div id="aurora-background">
         <div id="aurora-1" class="aurora-shape"></div>
         <div id="aurora-2" class="aurora-shape"></div>
@@ -319,15 +328,6 @@
 
     <main id="main-content">
         <div class="hero-spacer">
-            <img id="hero-logo" src="umsm_neon.png" alt="University of Michigan Supermileage Neon Logo">
-            
-            <div class="mt-auto mb-24 glass-panel rounded-3xl p-6 md:p-8 text-center z-20 reveal w-11/12 max-w-xl mx-auto">
-                <h3 class="text-sm md:text-lg font-bold neon-maize-text mb-3 uppercase tracking-widest">Countdown to Shell Eco-marathon</h3>
-                <div id="countdown-timer" class="text-3xl md:text-5xl font-extrabold text-white tracking-wider font-mono drop-shadow-lg">
-                    --d --h --m --s
-                </div>
-            </div>
-
             <div id="scroll-indicator">
                 <svg class="w-10 h-10 text-white/70 animate-bounce-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
             </div>
@@ -434,16 +434,16 @@
     </main>
 
     <div id="modal-cedar" class="modal-overlay">
-        <div class="glass-panel modal-content rounded-4xl p-8 lg:p-12">
-            <span class="close-button">&times;</span>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <div>
-                    <img src="index/cad.png" alt="Cedar" class="rounded-3xl w-full h-auto">
-                </div>
-                <div>
-                    <h2 class="text-4xl font-bold neon-maize-text mb-6">Cedar</h2>
-                    <p class="text-lg text-gray-300">Cedar is our newest and first ever battery-electric urban concept vehicle, representing the culmination of our sustainable vehicle development. We conducted our first ever team-wide Systems Requirements Review to help us finalize our design requirements. In order to come up with our requirements we conducted research using six-sigma analysis, ran Matlab and Simulink simulations on road load, tractive forces and motor efficiencies, and built on feedback and lessons learned from alumni, professors and industry professionals. Cedar will ultimately debut in the Shell Eco Marathon in spring 2026, followed by a world record attempt in 2027.</p>
-                </div>
+        <div class="glass-panel modal-content rounded-4xl p-6 md:p-8 lg:p-12 flex flex-col md:flex-row gap-8 max-h-[80vh] overflow-hidden relative">
+            <span class="close-button z-50">&times;</span>
+            
+            <div class="w-full md:w-1/2 flex-shrink-0 flex items-center">
+                <img src="4.jpeg" alt="Cedar" class="rounded-3xl w-full h-auto object-contain max-h-[30vh] md:max-h-none">
+            </div>
+            
+            <div class="w-full md:w-1/2 overflow-y-auto custom-scrollbar pr-4 pb-4">
+                <h2 class="text-3xl md:text-4xl font-bold neon-maize-text mb-4 mt-2 md:mt-0">Cedar</h2>
+                <p class="text-base md:text-lg text-gray-300 leading-relaxed">Cedar is our newest and first ever battery-electric urban concept vehicle, representing the culmination of our sustainable vehicle development. We conducted our first ever team-wide Systems Requirements Review to help us finalize our design requirements. In order to come up with our requirements we conducted research using six-sigma analysis, ran Matlab and Simulink simulations on road load, tractive forces and motor efficiencies, and built on feedback and lessons learned from alumni, professors and industry professionals. Cedar will ultimately debut in the Shell Eco Marathon in spring 2026, followed by a world record attempt in 2027.</p>
             </div>
         </div>
     </div>
@@ -463,6 +463,45 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // ==========================================
+            // INTRO ANIMATION LOGIC
+            // ==========================================
+            const introOverlay = document.getElementById('intro-overlay');
+            const introLogo = document.getElementById('intro-logo');
+            
+            // 1. Fade in the logo and scale it up slightly for a cinematic feel
+            setTimeout(() => {
+                introLogo.style.opacity = '1';
+                introLogo.style.transform = 'scale(1)';
+                
+                // Add the neon flicker effect after it finishes fading in
+                setTimeout(() => {
+                    introLogo.style.animation = 'neon-flicker 1.5s infinite linear';
+                }, 1000); 
+            }, 300);
+
+            // 2. Stop the flicker and rapidly fade/scale out the logo
+            setTimeout(() => {
+                introLogo.style.animation = 'none';
+                introLogo.style.transition = 'all 0.5s ease-in';
+                introLogo.style.opacity = '0';
+                introLogo.style.transform = 'scale(1.1)'; 
+            }, 2800);
+
+            // 3. Fade out the pure black overlay to reveal the beautiful website
+            setTimeout(() => {
+                introOverlay.style.opacity = '0';
+                
+                // Unlock the scrollbar so the user can browse
+                document.body.classList.remove('overflow-hidden');
+                
+                // Remove the intro overlay from the DOM completely
+                setTimeout(() => {
+                    introOverlay.remove();
+                }, 1000);
+            }, 3300);
+            // ==========================================
+
             // Mobile Menu Logic
             const mobileBtn = document.getElementById('mobile-menu-btn');
             const mobileMenu = document.getElementById('mobile-menu');
@@ -497,41 +536,9 @@
                     scrollIndicator.style.opacity = 1 - Math.min(window.scrollY / 100, 1); 
                 }); 
             }
-            
-            // Neon Flicker Logic
-            const heroLogo = document.getElementById('hero-logo');
-            if(heroLogo) {
-                let flickerTimeout;
-                function startFlicker() {
-                    const minOnDuration = 3000; const maxFlickerDuration = 800;
-                    function applyFlicker() {
-                        if (Math.random() < 0.7) {
-                            let flickerTime = 0;
-                            function flickerStep() {
-                                const randomDuration = Math.random() * 80 + 20;
-                                const randomOpacity = Math.random() < 0.5 ? (Math.random() * 0.4) : (0.7 + Math.random() * 0.3);
-                                heroLogo.style.opacity = randomOpacity;
-                                flickerTime += randomDuration;
-                                if (flickerTime < maxFlickerDuration && Math.random() < 0.8) {
-                                    setTimeout(flickerStep, randomDuration);
-                                } else {
-                                    heroLogo.style.opacity = 1;
-                                    flickerTimeout = setTimeout(startFlicker, minOnDuration + Math.random() * 2000);
-                                }
-                            }
-                            flickerStep();
-                        } else {
-                            flickerTimeout = setTimeout(startFlicker, minOnDuration + Math.random() * 5000);
-                        }
-                    }
-                    flickerTimeout = setTimeout(applyFlicker, minOnDuration + Math.random() * 2000);
-                }
-                startFlicker();
-            }
 
-            // Holographic Card Logic (Touch Check Removed for Robustness)
+            // Holographic Card Logic
             const cards = document.querySelectorAll('.holo-card');
-            
             cards.forEach(card => {
                 card.addEventListener('mousemove', (e) => {
                     if (card.classList.contains('is-animating')) return;
@@ -551,7 +558,7 @@
                 });
             });
             
-            // --- MODAL LOGIC (Refactored for reuse) ---
+            // --- MODAL LOGIC ---
             const modals = document.querySelectorAll('.modal-overlay');
             const closeButtons = document.querySelectorAll('.close-button');
             const studentBtn = document.getElementById('btn-students');
@@ -568,7 +575,6 @@
                 modal.classList.remove('active');
                 document.body.classList.remove('modal-open');
                 
-                // Reset cards if closed from a card click
                 cards.forEach(c => {
                     c.style.opacity = '1';
                     c.classList.remove('is-animating');
@@ -576,7 +582,6 @@
                 });
             }
 
-            // Click Handler for Student Button
             if (studentBtn && studentModal) {
                 studentBtn.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -584,7 +589,6 @@
                 });
             }
 
-            // Click Handler for Card-triggered Modals
             cards.forEach(card => {
                 const targetModalId = card.dataset.modalTarget;
                 if (!targetModalId) return;
@@ -610,7 +614,6 @@
                     
                     card.style.opacity = '0';
                     
-                    // Trigger animation
                     requestAnimationFrame(() => {
                         clone.style.top = '50%';
                         clone.style.left = '50%';
@@ -629,7 +632,6 @@
                 });
             });
 
-            // Close Logic
             closeButtons.forEach(button => {
                 button.addEventListener('click', (e) => { 
                     e.stopPropagation(); 
@@ -669,30 +671,6 @@
             }, { threshold: 0.1 });
             
             document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-            // NEW: Countdown Logic to Shell Eco-marathon
-            // Set for April 7, 2026, 1:30 PM EDT
-            const countDownDate = new Date("Apr 7, 2026 13:30:00").getTime();
-            const countdownTimerEl = document.getElementById("countdown-timer");
-            
-            if (countdownTimerEl) {
-                const countdownInterval = setInterval(function() {
-                    const now = new Date().getTime();
-                    const distance = countDownDate - now;
-
-                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                    countdownTimerEl.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-
-                    if (distance < 0) {
-                        clearInterval(countdownInterval);
-                        countdownTimerEl.innerHTML = "The Shell Eco-marathon has begun!";
-                    }
-                }, 1000);
-            }
         });
     </script>
 </body>
